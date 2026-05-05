@@ -1,5 +1,6 @@
 package ru.mentee.power.crm.contact.adapter.in.rest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ public class PersonController {
     private final GetPersonUseCase getPersonUseCase;
 
     @PostMapping
-    public ResponseEntity<PersonResponse> createPerson(@RequestBody CreatePersonRequest request) {
+    public ResponseEntity<PersonResponse> createPerson(@Valid @RequestBody CreatePersonRequest request) {
         Person person = createPersonUseCase.create(request.getFullName(), request.getEmail());
         PersonResponse response = PersonResponse.fromDomain(person);
         return ResponseEntity
