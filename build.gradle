@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.9'
     id 'io.spring.dependency-management' version '1.1.4'
-    id 'com.diffplug.spotless' version '6.25.0'
+    // id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'ru.mentee.power.crm'
@@ -21,6 +21,7 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -40,13 +41,39 @@ dependencyManagement {
     }
 }
 
-spotless {
-    java {
-        googleJavaFormat()
-        removeUnusedImports()
-    }
-}
+// spotless {
+//     java {
+//         googleJavaFormat()
+//         removeUnusedImports()
+//     }
+// }
 
 test {
     useJUnitPlatform()
 }
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integrationTest/java')
+        }
+        resources.srcDir file('src/integrationTest/resources')
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter test
+}
+
+check.dependsOn integrationTest
