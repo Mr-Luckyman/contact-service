@@ -1,6 +1,8 @@
 package ru.mentee.power.crm.contact.adapter.in.rest;
 
 import jakarta.validation.Valid;
+import java.net.URI;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,30 +15,26 @@ import ru.mentee.power.crm.contact.domain.model.Person;
 import ru.mentee.power.crm.contact.usecase.port.in.CreatePersonUseCase;
 import ru.mentee.power.crm.contact.usecase.port.in.GetPersonUseCase;
 
-import java.net.URI;
-import java.util.UUID;
-
 @RestController
-@RequestMapping("/api/v1/persons")
+@RequestMapping("/api/v1/people")
 @RequiredArgsConstructor
 public class PersonController {
 
-    private final CreatePersonUseCase createPersonUseCase;
-    private final GetPersonUseCase getPersonUseCase;
+  private final CreatePersonUseCase createPersonUseCase;
+  private final GetPersonUseCase getPersonUseCase;
+  private final PersonMapper personMapper;
 
-    @PostMapping
-    public ResponseEntity<PersonResponse> createPerson(@Valid @RequestBody CreatePersonRequest request) {
-        Person person = createPersonUseCase.create(request.getFullName(), request.getEmail());
-        PersonResponse response = PersonResponse.fromDomain(person);
-        return ResponseEntity
-                .created(URI.create("/api/v1/persons/" + person.getId()))
-                .body(response);
-    }
+  @PostMapping
+  public ResponseEntity<PersonResponse> createPerson(
+      @Valid @RequestBody CreatePersonRequest request) {
+    Person person = createPersonUseCase.create(request.getFullName(), request.getEmail());
+    PersonResponse response = personMapper.toResponse(person);
+    return ResponseEntity.created(URI.create("/api/v1/people/" + person.getId())).body(response);
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PersonResponse> getPerson(@PathVariable UUID id) {
-        Person person = getPersonUseCase.getById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id));
-        return ResponseEntity.ok(PersonResponse.fromDomain(person));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<PersonResponse> getPerson(@PathVariable UUID id) {
+    Person person = getPersonUseCase.getById(id).orElseThrow(() -> new PersonNotFoundException(id));
+    return ResponseEntity.ok(personMapper.toResponse(person));
+  }
 }

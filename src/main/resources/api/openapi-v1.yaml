@@ -7,7 +7,7 @@ servers:
   - url: http://localhost:8081
 
 paths:
-  /api/v1/persons:
+  /api/v1/people:
     post:
       summary: Создание новой персоны
       requestBody:
@@ -41,7 +41,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
 
-  /api/v1/persons/{id}:
+  /api/v1/people/{id}:
     get:
       summary: Получение персоны по ID
       parameters:
@@ -137,7 +137,7 @@ components:
         instance:
           type: string
           format: uri
-          example: "/api/v1/persons"
+          example: "/api/v1/people"
         errorCode:
           type: string
           enum:
