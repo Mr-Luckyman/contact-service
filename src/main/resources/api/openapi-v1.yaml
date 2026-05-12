@@ -1,0 +1,147 @@
+openapi: 3.1.0
+info:
+  title: Contact Service API
+  description: Управление контактами (персонами)
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+
+paths:
+  /api/v1/people:
+    post:
+      summary: Создание новой персоны
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePersonRequest"
+      responses:
+        '201':
+          description: Персона успешно создана
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonResponse"
+        '400':
+          description: Ошибка валидации
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        '409':
+          description: Конфликт по email
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+
+  /api/v1/people/{id}:
+    get:
+      summary: Получение персоны по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Персона найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonResponse"
+        '404':
+          description: Персона не найдена
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+
+components:
+  schemas:
+    CreatePersonRequest:
+      type: object
+      required:
+        - fullName
+        - email
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: "Иван Петров"
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: "ivan@example.com"
+
+    PersonResponse:
+      type: object
+      required:
+        - id
+        - fullName
+        - email
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        fullName:
+          type: string
+          example: "Иван Петров"
+        email:
+          type: string
+          format: email
+          example: "ivan@example.com"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-05-05T13:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-05-05T13:30:00Z"
+
+    ProblemDetail:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - errorCode
+      properties:
+        type:
+          type: string
+          format: uri
+          example: "/problems/validation-failed"
+        title:
+          type: string
+          example: "Validation Failed"
+        status:
+          type: integer
+          example: 400
+        detail:
+          type: string
+          example: "Поле email содержит некорректное значение"
+        instance:
+          type: string
+          format: uri
+          example: "/api/v1/people"
+        errorCode:
+          type: string
+          enum:
+            - VALIDATION_FAILED
+            - PERSON_EMAIL_CONFLICT
+            - PERSON_NOT_FOUND
+          example: "VALIDATION_FAILED"
