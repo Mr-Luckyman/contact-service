@@ -1,10 +1,9 @@
 package ru.mentee.power.crm.contact.usecase.port.in;
 
-import ru.mentee.power.crm.contact.domain.model.Company;
-
 import java.util.Optional;
 import java.util.UUID;
+import ru.mentee.power.crm.contact.domain.model.Company;
 
 public interface GetCompanyUseCase {
-    Optional<Company> getById(UUID id);
+  Optional<Company> getById(UUID id);
 }

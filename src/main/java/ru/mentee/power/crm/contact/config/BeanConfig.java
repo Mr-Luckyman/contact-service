@@ -10,13 +10,14 @@ import ru.mentee.power.crm.contact.usecase.service.PersonService;
 @Configuration
 public class BeanConfig {
 
-    @Bean
-    public PersonService personService(PersonRepository personRepository) {
-        return new PersonService(personRepository);
-    }
+  @Bean
+  public PersonService personService(PersonRepository personRepository) {
+    return new PersonService(personRepository);
+  }
 
-    @Bean
-    public CompanyService companyService(CompanyRepository companyRepository, PersonRepository personRepository) {
-        return new CompanyService(companyRepository, personRepository);
-    }
+  @Bean
+  public CompanyService companyService(
+      CompanyRepository companyRepository, PersonRepository personRepository) {
+    return new CompanyService(companyRepository, personRepository);
+  }
 }

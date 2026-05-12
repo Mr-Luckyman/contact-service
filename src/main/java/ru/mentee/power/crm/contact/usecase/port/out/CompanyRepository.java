@@ -1,15 +1,14 @@
 package ru.mentee.power.crm.contact.usecase.port.out;
 
-import ru.mentee.power.crm.contact.domain.model.Company;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import ru.mentee.power.crm.contact.domain.model.Company;
 
 public interface CompanyRepository {
-    Company save(Company company);
+  Company save(Company company);
 
-    Optional<Company> findById(UUID id);
+  Optional<Company> findById(UUID id);
 
-    List<Company> findAll(int page, int size);
+  List<Company> findAll(int page, int size);
 }

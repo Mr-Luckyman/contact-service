@@ -24,24 +24,24 @@ public class GlobalExceptionHandler {
     return problem;
   }
 
-    @ExceptionHandler(PersonNotFoundException.class)
-    public ProblemDetail handlePersonNotFound(PersonNotFoundException ex) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-        problem.setProperty("errorCode", "PERSON_NOT_FOUND");
-        return problem;
-    }
+  @ExceptionHandler(PersonNotFoundException.class)
+  public ProblemDetail handlePersonNotFound(PersonNotFoundException ex) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    problem.setProperty("errorCode", "PERSON_NOT_FOUND");
+    return problem;
+  }
 
-    @ExceptionHandler(CompanyNotFoundException.class)
-    public ProblemDetail handleCompanyNotFound(CompanyNotFoundException ex) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-        problem.setProperty("errorCode", "COMPANY_NOT_FOUND");
-        return problem;
-    }
+  @ExceptionHandler(CompanyNotFoundException.class)
+  public ProblemDetail handleCompanyNotFound(CompanyNotFoundException ex) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    problem.setProperty("errorCode", "COMPANY_NOT_FOUND");
+    return problem;
+  }
 
-    @ExceptionHandler(LinkedPersonNotFoundException.class)
-    public ProblemDetail handleLinkedPersonNotFound(LinkedPersonNotFoundException ex) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-        problem.setProperty("errorCode", "PERSON_NOT_FOUND");
-        return problem;
-    }
+  @ExceptionHandler(LinkedPersonNotFoundException.class)
+  public ProblemDetail handleLinkedPersonNotFound(LinkedPersonNotFoundException ex) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    problem.setProperty("errorCode", "PERSON_NOT_FOUND");
+    return problem;
+  }
 }
