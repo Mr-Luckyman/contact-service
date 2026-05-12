@@ -9,6 +9,7 @@ public class PersonResponse {
   private UUID id;
   private String fullName;
   private String email;
+  private String phone;
   private Instant createdAt;
   private Instant updatedAt;
 }

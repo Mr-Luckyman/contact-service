@@ -2,6 +2,8 @@ package ru.mentee.power.crm.contact.usecase.port.out;
 
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.mentee.power.crm.contact.domain.model.Person;
 
 public interface PersonRepository {
@@ -10,4 +12,8 @@ public interface PersonRepository {
   Optional<Person> findById(UUID id);
 
   boolean existsByEmail(String email);
+
+  void deleteById(UUID id);
+
+  Page<Person> findAll(String email, Pageable pageable);
 }

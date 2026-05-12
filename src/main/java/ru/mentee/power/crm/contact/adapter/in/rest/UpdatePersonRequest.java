@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CreatePersonRequest {
+public class UpdatePersonRequest {
   @NotBlank(message = "fullName must not be blank")
   private String fullName;
 
