@@ -53,7 +53,7 @@ class CompanyServiceTest {
   @Test
   void create_WithExistingPersonLink_ReturnsCompanyWithRole() {
     UUID personId = UUID.randomUUID();
-    Person person = Person.create("Ivan Petrov", "ivan@example.com");
+    Person person = Person.create("Ivan Petrov", "ivan@example.com", "+79091234567");
     when(personRepository.findById(personId)).thenReturn(Optional.of(person));
     when(companyRepository.save(any(Company.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));

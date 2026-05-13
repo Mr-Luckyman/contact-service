@@ -93,6 +93,7 @@ public class CompanyPersistenceAdapter implements CompanyRepository {
         person.getId(),
         person.getFullName(),
         person.getEmail(),
+        person.getPhone(),
         person.getCreatedAt(),
         person.getUpdatedAt());
   }
