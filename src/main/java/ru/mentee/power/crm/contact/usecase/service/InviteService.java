@@ -66,7 +66,7 @@ public class InviteService implements CreateInviteUseCase, GetInviteUseCase, Acc
   }
 
   @Override
-  @Transactional
+  @Transactional(noRollbackFor = InviteExpiredException.class)
   public Invite getByReferralCode(String referralCode) {
     Invite invite = findInvite(referralCode);
     if (invite.isPendingExpired(Instant.now(clock))) {
@@ -108,7 +108,7 @@ public class InviteService implements CreateInviteUseCase, GetInviteUseCase, Acc
         companyRepository
             .findById(invite.getCompanyId())
             .orElseThrow(() -> new CompanyService.CompanyNotFound(invite.getCompanyId()));
-    company.getPersonLinks().add(PersonCompanyLink.create(person.getId(), invite.getRole()));
+    company.addPersonLink(PersonCompanyLink.create(person.getId(), invite.getRole()));
     companyRepository.save(company);
 
     return inviteRepository.save(invite.accept(now));

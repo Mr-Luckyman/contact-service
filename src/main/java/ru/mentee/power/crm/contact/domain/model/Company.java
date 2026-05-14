@@ -48,4 +48,14 @@ public class Company {
         .personLinks(personLinks)
         .build();
   }
+
+  public void addPersonLink(PersonCompanyLink link) {
+    if (personLinks == null) {
+      personLinks = new ArrayList<>();
+    } else if (!(personLinks instanceof ArrayList)) {
+      personLinks = new ArrayList<>(personLinks);
+    }
+    link.setCompanyId(id);
+    personLinks.add(link);
+  }
 }
