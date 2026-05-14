@@ -132,4 +132,29 @@ class CompanyServiceTest {
 
     assertEquals("size must be between 1 and 100", exception.getMessage());
   }
+
+  @Test
+  void updateName_ExistingCompany_ReturnsUpdatedCompany() {
+    UUID id = UUID.randomUUID();
+    Company company = Company.create("Acme", List.of());
+    when(companyRepository.findById(id)).thenReturn(Optional.of(company));
+    when(companyRepository.save(any(Company.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    Company result = companyService.updateName(id, "Acme Ltd");
+
+    assertEquals("Acme Ltd", result.getName());
+    assertEquals(company.getId(), result.getId());
+    verify(companyRepository).save(any(Company.class));
+  }
+
+  @Test
+  void delete_ExistingCompany_DeletesCompany() {
+    UUID id = UUID.randomUUID();
+    when(companyRepository.existsById(id)).thenReturn(true);
+
+    companyService.delete(id);
+
+    verify(companyRepository).deleteById(id);
+  }
 }

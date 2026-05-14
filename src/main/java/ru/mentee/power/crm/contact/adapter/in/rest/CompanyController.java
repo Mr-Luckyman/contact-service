@@ -6,17 +6,21 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.mentee.power.crm.contact.domain.model.Company;
 import ru.mentee.power.crm.contact.usecase.port.in.CreateCompanyUseCase;
+import ru.mentee.power.crm.contact.usecase.port.in.DeleteCompanyUseCase;
 import ru.mentee.power.crm.contact.usecase.port.in.GetCompanyUseCase;
 import ru.mentee.power.crm.contact.usecase.port.in.ListCompaniesUseCase;
+import ru.mentee.power.crm.contact.usecase.port.in.UpdateCompanyUseCase;
 
 @RestController
 @RequestMapping("/api/v1/companies")
@@ -25,6 +29,8 @@ public class CompanyController {
   private final CreateCompanyUseCase createCompanyUseCase;
   private final GetCompanyUseCase getCompanyUseCase;
   private final ListCompaniesUseCase listCompaniesUseCase;
+  private final UpdateCompanyUseCase updateCompanyUseCase;
+  private final DeleteCompanyUseCase deleteCompanyUseCase;
 
   @PostMapping
   public ResponseEntity<CompanyResponse> createCompany(
@@ -39,6 +45,19 @@ public class CompanyController {
     Company company =
         getCompanyUseCase.getById(id).orElseThrow(() -> new CompanyNotFoundException(id));
     return ResponseEntity.ok(CompanyResponse.fromDomain(company));
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<CompanyResponse> updateCompany(
+      @PathVariable UUID id, @Valid @RequestBody UpdateCompanyRequest request) {
+    Company company = updateCompanyUseCase.updateName(id, request.getName());
+    return ResponseEntity.ok(CompanyResponse.fromDomain(company));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteCompany(@PathVariable UUID id) {
+    deleteCompanyUseCase.delete(id);
+    return ResponseEntity.noContent().build();
   }
 
   @GetMapping

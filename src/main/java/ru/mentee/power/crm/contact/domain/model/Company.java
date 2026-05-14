@@ -38,4 +38,14 @@ public class Company {
         .personLinks(links)
         .build();
   }
+
+  public Company rename(String newName) {
+    return Company.builder()
+        .id(id)
+        .name(newName)
+        .createdAt(createdAt)
+        .updatedAt(Instant.now())
+        .personLinks(personLinks)
+        .build();
+  }
 }
