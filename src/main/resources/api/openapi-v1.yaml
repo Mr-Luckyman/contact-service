@@ -1,13 +1,13 @@
 openapi: 3.1.0
 info:
   title: Contact Service API
-  description: Управление контактами и компаниями
+  description: Управление контактами, компаниями и приглашениями
   version: 1.0.1
 servers:
   - url: http://localhost:8081
 
 paths:
-  /api/v1/people:
+  /api/v1/persons:
     post:
       summary: Создание новой персоны
       requestBody:
@@ -29,28 +29,31 @@ paths:
               schema:
                 $ref: "#/components/schemas/PersonResponse"
         '400':
-          description: Ошибка валидации
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ProblemDetail"
+          $ref: "#/components/responses/BadRequest"
         '409':
-          description: Конфликт по email
+          $ref: "#/components/responses/Conflict"
+    get:
+      summary: Получение списка персон
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        '200':
+          description: Список персон
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetail"
+                type: array
+                items:
+                  $ref: "#/components/schemas/PersonResponse"
+        '400':
+          $ref: "#/components/responses/BadRequest"
 
-  /api/v1/people/{id}:
+  /api/v1/persons/{id}:
     get:
       summary: Получение персоны по ID
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/Id"
       responses:
         '200':
           description: Персона найдена
@@ -59,11 +62,39 @@ paths:
               schema:
                 $ref: "#/components/schemas/PersonResponse"
         '404':
-          description: Персона не найдена
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: Обновление персоны
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePersonRequest"
+      responses:
+        '200':
+          description: Персона обновлена
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetail"
+                $ref: "#/components/schemas/PersonResponse"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '409':
+          $ref: "#/components/responses/Conflict"
+    delete:
+      summary: Удаление персоны
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        '204':
+          description: Персона удалена
+        '404':
+          $ref: "#/components/responses/NotFound"
 
   /api/v1/companies:
     post:
@@ -87,35 +118,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/CompanyResponse"
         '400':
-          description: Ошибка валидации
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ProblemDetail"
+          $ref: "#/components/responses/BadRequest"
         '404':
-          description: Связанная персона не найдена
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ProblemDetail"
+          $ref: "#/components/responses/NotFound"
     get:
       summary: Получение списка компаний
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            default: 0
-        - name: size
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 20
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
       responses:
         '200':
           description: Список компаний
@@ -126,22 +136,13 @@ paths:
                 items:
                   $ref: "#/components/schemas/CompanyResponse"
         '400':
-          description: Ошибка параметров пагинации
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ProblemDetail"
+          $ref: "#/components/responses/BadRequest"
 
   /api/v1/companies/{id}:
     get:
       summary: Получение компании по ID
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/Id"
       responses:
         '200':
           description: Компания найдена
@@ -150,19 +151,173 @@ paths:
               schema:
                 $ref: "#/components/schemas/CompanyResponse"
         '404':
-          description: Компания не найдена
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: Обновление имени компании
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCompanyRequest"
+      responses:
+        '200':
+          description: Компания обновлена
           content:
-            application/problem+json:
+            application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetail"
+                $ref: "#/components/schemas/CompanyResponse"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '404':
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Удаление компании
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        '204':
+          description: Компания удалена
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+  /api/v1/invites:
+    post:
+      summary: Создание приглашения
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInviteRequest"
+      responses:
+        '201':
+          description: Приглашение создано
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InviteResponse"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '409':
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/invites/{referralCode}:
+    get:
+      summary: Проверка приглашения по коду
+      parameters:
+        - $ref: "#/components/parameters/ReferralCode"
+      responses:
+        '200':
+          description: Приглашение найдено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InviteResponse"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '410':
+          $ref: "#/components/responses/Gone"
+
+  /api/v1/invites/{referralCode}/accept:
+    post:
+      summary: Принятие приглашения
+      parameters:
+        - $ref: "#/components/parameters/ReferralCode"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcceptInviteRequest"
+      responses:
+        '200':
+          description: Приглашение принято
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InviteResponse"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '409':
+          $ref: "#/components/responses/Conflict"
 
 components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ReferralCode:
+      name: referralCode
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 8
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    Size:
+      name: size
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  responses:
+    BadRequest:
+      description: Ошибка валидации
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+    NotFound:
+      description: Ресурс не найден
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+    Conflict:
+      description: Конфликт состояния
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+    Gone:
+      description: Ресурс больше недоступен
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+
   schemas:
     CreatePersonRequest:
       type: object
-      required:
-        - fullName
-        - email
+      required: [fullName, email]
       properties:
         fullName:
           type: string
@@ -175,39 +330,32 @@ components:
           maxLength: 255
           example: "ivan@example.com"
 
+    UpdatePersonRequest:
+      allOf:
+        - $ref: "#/components/schemas/CreatePersonRequest"
+
     PersonResponse:
       type: object
-      required:
-        - id
-        - fullName
-        - email
-        - createdAt
-        - updatedAt
+      required: [id, fullName, email, createdAt, updatedAt]
       properties:
         id:
           type: string
           format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
         fullName:
           type: string
-          example: "Иван Петров"
         email:
           type: string
           format: email
-          example: "ivan@example.com"
         createdAt:
           type: string
           format: date-time
-          example: "2026-05-05T13:30:00Z"
         updatedAt:
           type: string
           format: date-time
-          example: "2026-05-05T13:30:00Z"
 
     CreateCompanyRequest:
       type: object
-      required:
-        - name
+      required: [name]
       properties:
         name:
           type: string
@@ -220,16 +368,23 @@ components:
             $ref: "#/components/schemas/CreateCompanyPersonLinkRequest"
           default: []
 
+    UpdateCompanyRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: "Acme Ltd"
+
     CreateCompanyPersonLinkRequest:
       type: object
-      required:
-        - personId
-        - role
+      required: [personId, role]
       properties:
         personId:
           type: string
           format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
         role:
           type: string
           minLength: 1
@@ -238,28 +393,19 @@ components:
 
     CompanyResponse:
       type: object
-      required:
-        - id
-        - name
-        - createdAt
-        - updatedAt
-        - persons
+      required: [id, name, createdAt, updatedAt, persons]
       properties:
         id:
           type: string
           format: uuid
-          example: "7af0d9ce-1d46-4a54-889b-6ac35be6320a"
         name:
           type: string
-          example: "Acme Inc"
         createdAt:
           type: string
           format: date-time
-          example: "2026-05-05T13:30:00Z"
         updatedAt:
           type: string
           format: date-time
-          example: "2026-05-05T13:30:00Z"
         persons:
           type: array
           items:
@@ -267,50 +413,108 @@ components:
 
     CompanyPersonResponse:
       type: object
-      required:
-        - personId
-        - role
+      required: [personId, role]
       properties:
         personId:
           type: string
           format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
         fullName:
           type: string
-          example: "Иван Петров"
         email:
           type: string
           format: email
-          example: "ivan@example.com"
         role:
           type: string
-          example: "CEO"
+
+    CreateInviteRequest:
+      type: object
+      required: [email, companyId, role]
+      properties:
+        email:
+          type: string
+          format: email
+        companyId:
+          type: string
+          format: uuid
+        role:
+          type: string
+          minLength: 1
+          maxLength: 255
+        inviterPersonId:
+          type: string
+          format: uuid
+
+    AcceptInviteRequest:
+      type: object
+      required: [email, fullName]
+      properties:
+        email:
+          type: string
+          format: email
+        fullName:
+          type: string
+          minLength: 1
+          maxLength: 255
+
+    InviteResponse:
+      type: object
+      required: [id, email, companyId, role, referralCode, status, expiresAt, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        companyId:
+          type: string
+          format: uuid
+        role:
+          type: string
+        inviterPersonId:
+          type: string
+          format: uuid
+        referralCode:
+          type: string
+          minLength: 8
+          maxLength: 8
+        status:
+          $ref: "#/components/schemas/InviteStatus"
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    InviteStatus:
+      type: string
+      enum: [PENDING, ACCEPTED, EXPIRED, CANCELLED]
 
     ProblemDetail:
       type: object
-      required:
-        - type
-        - title
-        - status
-        - errorCode
+      required: [type, title, status, errorCode]
       properties:
         type:
           type: string
           format: uri
-          example: "/problems/validation-failed"
+          example: "about:blank"
         title:
           type: string
-          example: "Validation Failed"
+          example: "Bad Request"
         status:
           type: integer
           example: 400
         detail:
           type: string
-          example: "Поле email содержит некорректное значение"
+          example: "Validation failed"
         instance:
           type: string
           format: uri
-          example: "/api/v1/people"
+          example: "/api/v1/persons"
         errorCode:
           type: string
           enum:
@@ -318,4 +522,6 @@ components:
             - PERSON_EMAIL_CONFLICT
             - PERSON_NOT_FOUND
             - COMPANY_NOT_FOUND
-          example: "VALIDATION_FAILED"
+            - INVITE_NOT_FOUND
+            - INVITE_EXPIRED
+            - INVITE_CONFLICT
