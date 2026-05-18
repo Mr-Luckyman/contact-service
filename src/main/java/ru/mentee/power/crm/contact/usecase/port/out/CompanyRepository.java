@@ -11,4 +11,8 @@ public interface CompanyRepository {
   Optional<Company> findById(UUID id);
 
   List<Company> findAll(int page, int size);
+
+  boolean existsById(UUID id);
+
+  void deleteById(UUID id);
 }
