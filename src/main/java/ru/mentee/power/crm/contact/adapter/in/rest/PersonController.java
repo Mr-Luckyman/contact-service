@@ -26,6 +26,7 @@ import ru.mentee.power.crm.contact.usecase.port.in.UpdatePersonUseCase;
 @RequestMapping("/api/v1/persons")
 @RequiredArgsConstructor
 public class PersonController {
+  private static final String BASE_PATH = "/api/v1/persons/";
 
   private final CreatePersonUseCase createPersonUseCase;
   private final UpdatePersonUseCase updatePersonUseCase;
@@ -40,7 +41,7 @@ public class PersonController {
     Person person =
         createPersonUseCase.create(request.getFullName(), request.getEmail(), request.getPhone());
     PersonResponse response = personMapper.toResponse(person);
-    return ResponseEntity.created(URI.create("/api/v1/persons/" + person.getId())).body(response);
+    return ResponseEntity.created(URI.create(BASE_PATH + person.getId())).body(response);
   }
 
   @GetMapping("/{id}")

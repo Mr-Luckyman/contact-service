@@ -3,12 +3,14 @@ package ru.mentee.power.crm.contact.domain.model;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Builder
 public class Person {
   private final UUID id;
   private final String fullName;

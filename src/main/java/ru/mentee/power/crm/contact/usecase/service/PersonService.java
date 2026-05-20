@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.mentee.power.crm.contact.adapter.in.rest.PersonNotFoundException;
 import ru.mentee.power.crm.contact.domain.model.Person;
 import ru.mentee.power.crm.contact.usecase.port.in.CreatePersonUseCase;
@@ -18,6 +19,7 @@ import ru.mentee.power.crm.contact.usecase.port.out.PersonRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PersonService
     implements CreatePersonUseCase,
         GetPersonUseCase,
@@ -29,15 +31,6 @@ public class PersonService
 
   @Override
   public Person create(String fullName, String email, String phone) {
-    // Валидация
-    if (fullName == null || fullName.isBlank()) {
-      throw new IllegalArgumentException("fullName must not be blank");
-    }
-    if (email == null || email.isBlank()) {
-      throw new IllegalArgumentException("email must not be blank");
-    }
-
-    // Дедупликация
     if (personRepository.existsByEmail(email)) {
       throw new IllegalStateException("Person with email " + email + " already exists");
     }
@@ -48,9 +41,6 @@ public class PersonService
 
   @Override
   public Optional<Person> getById(UUID id) {
-    if (id == null) {
-      throw new IllegalArgumentException("id must not be null");
-    }
     return personRepository.findById(id);
   }
 
@@ -69,10 +59,6 @@ public class PersonService
 
   @Override
   public Person update(UUID id, UpdatePersonCommand command) {
-    if (id == null) {
-      throw new IllegalArgumentException("id must not be null");
-    }
-
     Person person =
         personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
 
@@ -89,10 +75,6 @@ public class PersonService
 
   @Override
   public void delete(UUID id) {
-    if (id == null) {
-      throw new IllegalArgumentException("id must not be null");
-    }
-
     if (personRepository.findById(id).isEmpty()) {
       throw new PersonNotFoundException(id);
     }

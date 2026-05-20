@@ -55,59 +55,6 @@ class PersonServiceTest {
   }
 
   @Test
-  void create_WithEmptyFullName_ThrowsException() {
-    String fullName = "";
-    String email = "ivan@example.com";
-
-    IllegalArgumentException exception =
-        assertThrows(
-            IllegalArgumentException.class, () -> personService.create(fullName, email, null));
-
-    assertEquals("fullName must not be blank", exception.getMessage());
-    verify(personRepository, never()).existsByEmail(any());
-    verify(personRepository, never()).save(any());
-  }
-
-  @Test
-  void create_WithNullFullName_ThrowsException() {
-    String email = "ivan@example.com";
-
-    IllegalArgumentException exception =
-        assertThrows(IllegalArgumentException.class, () -> personService.create(null, email, null));
-
-    assertEquals("fullName must not be blank", exception.getMessage());
-    verify(personRepository, never()).existsByEmail(any());
-    verify(personRepository, never()).save(any());
-  }
-
-  @Test
-  void create_WithEmptyEmail_ThrowsException() {
-    String fullName = "Иван Петров";
-    String email = "";
-
-    IllegalArgumentException exception =
-        assertThrows(
-            IllegalArgumentException.class, () -> personService.create(fullName, email, null));
-
-    assertEquals("email must not be blank", exception.getMessage());
-    verify(personRepository, never()).existsByEmail(any());
-    verify(personRepository, never()).save(any());
-  }
-
-  @Test
-  void create_WithNullEmail_ThrowsException() {
-    String fullName = "Иван Петров";
-
-    IllegalArgumentException exception =
-        assertThrows(
-            IllegalArgumentException.class, () -> personService.create(fullName, null, null));
-
-    assertEquals("email must not be blank", exception.getMessage());
-    verify(personRepository, never()).existsByEmail(any());
-    verify(personRepository, never()).save(any());
-  }
-
-  @Test
   void create_WithEmailConflict_ThrowsException() {
     String fullName = "Иван Петров";
     String email = "ivan@example.com";
@@ -147,15 +94,6 @@ class PersonServiceTest {
 
     assertFalse(result.isPresent());
     verify(personRepository).findById(id);
-  }
-
-  @Test
-  void getById_NullId_ThrowsException() {
-    IllegalArgumentException exception =
-        assertThrows(IllegalArgumentException.class, () -> personService.getById(null));
-
-    assertEquals("id must not be null", exception.getMessage());
-    verify(personRepository, never()).findById(any());
   }
 
   @Test
@@ -228,18 +166,6 @@ class PersonServiceTest {
   }
 
   @Test
-  void update_WithNullId_ThrowsException() {
-    UpdatePersonUseCase.UpdatePersonCommand command =
-        new UpdatePersonUseCase.UpdatePersonCommand("Иван Петров", "ivan@example.com", null);
-
-    IllegalArgumentException exception =
-        assertThrows(IllegalArgumentException.class, () -> personService.update(null, command));
-
-    assertEquals("id must not be null", exception.getMessage());
-    verify(personRepository, never()).findById(any());
-  }
-
-  @Test
   void delete_Success() {
     UUID id = UUID.randomUUID();
     Person existingPerson = Person.create("Иван Петров", "ivan@example.com", null);
@@ -260,15 +186,6 @@ class PersonServiceTest {
 
     assertThrows(PersonNotFoundException.class, () -> personService.delete(id));
     verify(personRepository, never()).deleteById(any());
-  }
-
-  @Test
-  void delete_WithNullId_ThrowsException() {
-    IllegalArgumentException exception =
-        assertThrows(IllegalArgumentException.class, () -> personService.delete(null));
-
-    assertEquals("id must not be null", exception.getMessage());
-    verify(personRepository, never()).findById(any());
   }
 
   @Test
