@@ -4,6 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.mentee.power.crm.contact.usecase.service.CompanyService;
+import ru.mentee.power.crm.contact.usecase.service.InviteConflictException;
+import ru.mentee.power.crm.contact.usecase.service.InviteExpiredException;
+import ru.mentee.power.crm.contact.usecase.service.InviteNotFoundException;
 import ru.mentee.power.crm.contact.usecase.service.LinkedPersonNotFoundException;
 
 @RestControllerAdvice
@@ -38,10 +42,38 @@ public class GlobalExceptionHandler {
     return problem;
   }
 
+  @ExceptionHandler(CompanyService.CompanyNotFound.class)
+  public ProblemDetail handleCompanyNotFound(CompanyService.CompanyNotFound ex) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    problem.setProperty("errorCode", "COMPANY_NOT_FOUND");
+    return problem;
+  }
+
   @ExceptionHandler(LinkedPersonNotFoundException.class)
   public ProblemDetail handleLinkedPersonNotFound(LinkedPersonNotFoundException ex) {
     ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     problem.setProperty("errorCode", "PERSON_NOT_FOUND");
+    return problem;
+  }
+
+  @ExceptionHandler(InviteNotFoundException.class)
+  public ProblemDetail handleInviteNotFound(InviteNotFoundException ex) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    problem.setProperty("errorCode", "INVITE_NOT_FOUND");
+    return problem;
+  }
+
+  @ExceptionHandler(InviteExpiredException.class)
+  public ProblemDetail handleInviteExpired(InviteExpiredException ex) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.GONE, ex.getMessage());
+    problem.setProperty("errorCode", "INVITE_EXPIRED");
+    return problem;
+  }
+
+  @ExceptionHandler(InviteConflictException.class)
+  public ProblemDetail handleInviteConflict(InviteConflictException ex) {
+    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    problem.setProperty("errorCode", "INVITE_CONFLICT");
     return problem;
   }
 }

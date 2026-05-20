@@ -20,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-class PersonControllerIntegrationTest {
+class   PersonControllerIntegrationTest {
 
   @LocalServerPort private int port;
 

@@ -38,4 +38,24 @@ public class Company {
         .personLinks(links)
         .build();
   }
+
+  public Company rename(String newName) {
+    return Company.builder()
+        .id(id)
+        .name(newName)
+        .createdAt(createdAt)
+        .updatedAt(Instant.now())
+        .personLinks(personLinks)
+        .build();
+  }
+
+  public void addPersonLink(PersonCompanyLink link) {
+    if (personLinks == null) {
+      personLinks = new ArrayList<>();
+    } else if (!(personLinks instanceof ArrayList)) {
+      personLinks = new ArrayList<>(personLinks);
+    }
+    link.setCompanyId(id);
+    personLinks.add(link);
+  }
 }

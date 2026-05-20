@@ -49,6 +49,18 @@ public class CompanyPersistenceAdapter implements CompanyRepository {
         .toList();
   }
 
+  @Override
+  @Transactional(readOnly = true)
+  public boolean existsById(UUID id) {
+    return companyJpaRepository.existsById(id);
+  }
+
+  @Override
+  @Transactional
+  public void deleteById(UUID id) {
+    companyJpaRepository.deleteById(id);
+  }
+
   private CompanyJpaEntity toCompanyJpaEntity(Company company) {
     return new CompanyJpaEntity(
         company.getId(), company.getName(), company.getCreatedAt(), company.getUpdatedAt());

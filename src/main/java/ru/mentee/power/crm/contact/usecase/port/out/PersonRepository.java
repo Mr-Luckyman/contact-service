@@ -11,6 +11,8 @@ public interface PersonRepository {
 
   Optional<Person> findById(UUID id);
 
+  Optional<Person> findByEmail(String email);
+
   boolean existsByEmail(String email);
 
   void deleteById(UUID id);

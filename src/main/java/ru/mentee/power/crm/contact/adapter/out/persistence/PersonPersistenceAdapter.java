@@ -29,6 +29,11 @@ public class PersonPersistenceAdapter implements PersonRepository {
   }
 
   @Override
+  public Optional<Person> findByEmail(String email) {
+    return jpaRepository.findByEmail(email).map(mapper::toDomainEntity);
+  }
+
+  @Override
   public boolean existsByEmail(String email) {
     return jpaRepository.existsByEmail(email);
   }
