@@ -102,7 +102,7 @@ public class InviteService implements CreateInviteUseCase, GetInviteUseCase, Acc
             .orElseGet(
                 () ->
                     personRepository.save(
-                        Person.create(validateFullName(fullName), normalizedEmail)));
+                        Person.create(validateFullName(fullName), normalizedEmail, "+")));
 
     Company company =
         companyRepository

@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "people")
+@Table(name = "persons")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +21,9 @@ public class PersonJpaEntity {
 
   @Column(nullable = false, unique = true)
   private String email;
+
+  @Column(length = 50)
+  private String phone;
 
   @Column(name = "created_at", nullable = false)
   private Instant createdAt;

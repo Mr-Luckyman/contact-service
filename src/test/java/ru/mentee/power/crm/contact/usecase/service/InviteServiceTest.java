@@ -105,7 +105,7 @@ class InviteServiceTest {
   @Test
   void accept_WithExistingPerson_UsesExistingPersonAndAcceptsInvite() {
     UUID companyId = UUID.randomUUID();
-    Person person = Person.create("Ivan Petrov", "ivan@example.com");
+    Person person = Person.create("Ivan Petrov", "ivan@example.com", "+");
     Company company = Company.create("Acme", List.of());
     Invite invite = Invite.create("ivan@example.com", companyId, "CEO", null, "ABCDEFGH", NOW);
     when(inviteRepository.findByReferralCode("ABCDEFGH")).thenReturn(Optional.of(invite));

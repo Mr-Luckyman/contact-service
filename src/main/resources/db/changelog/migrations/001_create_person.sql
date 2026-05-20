@@ -1,9 +1,10 @@
-CREATE TABLE IF NOT EXISTS people (
-    id UUID PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS persons (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     full_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
+    phone VARCHAR(50),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_person_email ON people(email);
+CREATE INDEX idx_person_email ON persons(email);

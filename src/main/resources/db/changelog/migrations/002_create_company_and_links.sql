@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS person_company_links (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_person_company_links_person
-        FOREIGN KEY (person_id) REFERENCES people(id) ON DELETE RESTRICT,
+        FOREIGN KEY (person_id) REFERENCES persons(id) ON DELETE RESTRICT,
     CONSTRAINT fk_person_company_links_company
         FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
 );

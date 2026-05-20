@@ -1,8 +1,10 @@
 package ru.mentee.power.crm.contact.usecase.port.in;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 import ru.mentee.power.crm.contact.domain.model.Person;
 
 public interface ListPersonsUseCase {
-  List<Person> list(int page, int size);
+  Page<Person> list(Query query);
+
+  record Query(String email, int page, int size) {}
 }

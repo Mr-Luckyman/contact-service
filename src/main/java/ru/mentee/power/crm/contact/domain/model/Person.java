@@ -3,26 +3,29 @@ package ru.mentee.power.crm.contact.domain.model;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Builder
 public class Person {
   private final UUID id;
   private final String fullName;
   private final String email;
+  private final String phone;
   private final Instant createdAt;
   private Instant updatedAt;
 
-  public static Person create(String fullName, String email) {
+  public static Person create(String fullName, String email, String phone) {
     UUID nowId = UUID.randomUUID();
     Instant now = Instant.now();
-    return new Person(nowId, fullName, email, now, now);
+    return new Person(nowId, fullName, email, phone, now, now);
   }
 
-  public Person update(String newFullName, String newEmail) {
-    return new Person(this.id, newFullName, newEmail, this.createdAt, Instant.now());
+  public Person update(String newFullName, String newEmail, String newPhone) {
+    return new Person(this.id, newFullName, newEmail, newPhone, this.createdAt, Instant.now());
   }
 }

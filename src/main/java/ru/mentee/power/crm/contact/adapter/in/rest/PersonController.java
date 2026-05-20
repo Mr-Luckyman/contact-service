@@ -2,9 +2,9 @@ package ru.mentee.power.crm.contact.adapter.in.rest;
 
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,20 +26,22 @@ import ru.mentee.power.crm.contact.usecase.port.in.UpdatePersonUseCase;
 @RequestMapping("/api/v1/persons")
 @RequiredArgsConstructor
 public class PersonController {
+  private static final String BASE_PATH = "/api/v1/persons/";
 
   private final CreatePersonUseCase createPersonUseCase;
-  private final GetPersonUseCase getPersonUseCase;
-  private final ListPersonsUseCase listPersonsUseCase;
   private final UpdatePersonUseCase updatePersonUseCase;
   private final DeletePersonUseCase deletePersonUseCase;
+  private final GetPersonUseCase getPersonUseCase;
+  private final ListPersonsUseCase listPersonsUseCase;
   private final PersonMapper personMapper;
 
   @PostMapping
   public ResponseEntity<PersonResponse> createPerson(
       @Valid @RequestBody CreatePersonRequest request) {
-    Person person = createPersonUseCase.create(request.getFullName(), request.getEmail());
+    Person person =
+        createPersonUseCase.create(request.getFullName(), request.getEmail(), request.getPhone());
     PersonResponse response = personMapper.toResponse(person);
-    return ResponseEntity.created(URI.create("/api/v1/persons/" + person.getId())).body(response);
+    return ResponseEntity.created(URI.create(BASE_PATH + person.getId())).body(response);
   }
 
   @GetMapping("/{id}")
@@ -49,16 +51,25 @@ public class PersonController {
   }
 
   @GetMapping
-  public ResponseEntity<List<PersonResponse>> listPersons(
-      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
-    return ResponseEntity.ok(
-        listPersonsUseCase.list(page, size).stream().map(personMapper::toResponse).toList());
+  public ResponseEntity<PersonPageResponse> listPersons(
+      @RequestParam(required = false) String email,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "20") int size) {
+
+    ListPersonsUseCase.Query query = new ListPersonsUseCase.Query(email, page, size);
+    Page<Person> personPage = listPersonsUseCase.list(query);
+
+    PersonPageResponse response = PersonPageResponse.fromPage(personPage, personMapper);
+    return ResponseEntity.ok(response);
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<PersonResponse> updatePerson(
       @PathVariable UUID id, @Valid @RequestBody UpdatePersonRequest request) {
-    Person person = updatePersonUseCase.update(id, request.getFullName(), request.getEmail());
+    UpdatePersonUseCase.UpdatePersonCommand personCommand =
+        new UpdatePersonUseCase.UpdatePersonCommand(
+            request.getFullName(), request.getEmail(), request.getPhone());
+    Person person = updatePersonUseCase.update(id, personCommand);
     return ResponseEntity.ok(personMapper.toResponse(person));
   }
 

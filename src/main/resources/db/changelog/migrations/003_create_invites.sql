@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS invites (
     CONSTRAINT fk_invites_company
         FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
     CONSTRAINT fk_invites_inviter_person
-        FOREIGN KEY (inviter_person_id) REFERENCES people(id) ON DELETE SET NULL,
+        FOREIGN KEY (inviter_person_id) REFERENCES persons(id) ON DELETE SET NULL,
     CONSTRAINT chk_invites_status
         CHECK (status IN ('PENDING', 'ACCEPTED', 'EXPIRED', 'CANCELLED')),
     CONSTRAINT chk_invites_referral_code_length

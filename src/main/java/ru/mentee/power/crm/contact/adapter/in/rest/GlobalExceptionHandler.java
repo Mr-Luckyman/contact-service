@@ -9,7 +9,6 @@ import ru.mentee.power.crm.contact.usecase.service.InviteConflictException;
 import ru.mentee.power.crm.contact.usecase.service.InviteExpiredException;
 import ru.mentee.power.crm.contact.usecase.service.InviteNotFoundException;
 import ru.mentee.power.crm.contact.usecase.service.LinkedPersonNotFoundException;
-import ru.mentee.power.crm.contact.usecase.service.PersonService;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -40,13 +39,6 @@ public class GlobalExceptionHandler {
   public ProblemDetail handleCompanyNotFound(CompanyNotFoundException ex) {
     ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     problem.setProperty("errorCode", "COMPANY_NOT_FOUND");
-    return problem;
-  }
-
-  @ExceptionHandler(PersonService.PersonNotFound.class)
-  public ProblemDetail handlePersonNotFound(PersonService.PersonNotFound ex) {
-    ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-    problem.setProperty("errorCode", "PERSON_NOT_FOUND");
     return problem;
   }
 

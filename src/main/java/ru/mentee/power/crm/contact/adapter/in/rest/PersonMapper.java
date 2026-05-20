@@ -11,11 +11,6 @@ import ru.mentee.power.crm.contact.domain.model.Person;
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PersonMapper {
 
-  @Mapping(target = "id", source = "id")
-  @Mapping(target = "fullName", source = "fullName")
-  @Mapping(target = "email", source = "email")
-  @Mapping(target = "createdAt", source = "createdAt")
-  @Mapping(target = "updatedAt", source = "updatedAt")
   PersonResponse toResponse(Person person);
 
   @Mapping(target = "updatedAt", ignore = true)
